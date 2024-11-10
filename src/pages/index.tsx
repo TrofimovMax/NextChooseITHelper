@@ -1,4 +1,4 @@
-// src/pages/index.tsx
+// src/pages/index.ts
 
 import { Container, Typography, Button, Box } from "@mui/material";
 import Link from "next/link";
