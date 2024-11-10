@@ -1,27 +1,17 @@
 // src/pages/questions/index.tsx
 
 import { useState } from "react";
-import { Container, Typography, Button } from "@mui/material";
-
-const questions = [
-  {
-    question: "Какова основная цель вашего проекта?",
-    options: ["Веб-сайт", "Мобильное приложение", "Игра", "Другое"],
-  },
-  {
-    question: "Какую функциональность вы хотите реализовать?",
-    options: ["Чат", "Галерея", "Форма обратной связи", "Другое"],
-  },
-  // Need add more
-];
+import { Container, Typography } from "@mui/material";
+import StepOne from "@/components/StepOne";
+import StepTwo from "@/components/StepTwo";
 
 export default function Question() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<string[]>([]);
 
-  const handleAnswer = (answer: string) => {
+  const handleNextStep = (answer: string) => {
     setAnswers((prev) => [...prev, answer]);
-    setCurrentQuestion((prev) => prev + 1);
+    setCurrentStep((prev) => prev + 1);
   };
 
   return (
@@ -29,24 +19,13 @@ export default function Question() {
       <Typography variant="h4" mt={4}>
         Давайте начнем выбирать ваш технологический стек!
       </Typography>
-      {currentQuestion < questions.length ? (
-        <>
-          <Typography variant="body1" mt={2}>
-            {questions[currentQuestion].question}
-          </Typography>
-          {questions[currentQuestion].options.map((option) => (
-            <Button
-              key={option}
-              variant="outlined"
-              onClick={() => handleAnswer(option)}
-              style={{ margin: "5px" }}
-            >
-              {option}
-            </Button>
-          ))}
-        </>
-      ) : (
+      {currentStep === 1 && <StepOne onNext={handleNextStep} />}
+      {currentStep === 2 && (
+        <StepTwo previousAnswer={answers[0]} onNext={handleNextStep} />
+      )}
+      {
         // At the end there will be a request to the server
+        currentStep > 2 && (
         <Typography variant="body1" mt={2}>
           Спасибо за ваши ответы! Мы обработаем их и предоставим рекомендации.
         </Typography>
