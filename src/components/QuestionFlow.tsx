@@ -1,32 +1,32 @@
 // src/components/QuestionFlow.tsx
 
 import React, { useState } from "react";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Box, Button } from "@mui/material";
 import QuestionCard from "./QuestionCard";
-import questions, { Question } from "../questions";
+import questions, { Option } from "../questions";
 
 export default function QuestionFlow() {
   const [currentStep, setCurrentStep] = useState(0);
   const [otherCycle, setOtherCycle] = useState(false);
+  const [visibleOptions, setVisibleOptions] = useState<Option[]>(questions[currentStep].options.slice(0, 4));
+  const [offset, setOffset] = useState(0);
 
   const handleOptionSelect = (key: string) => {
     if (key === "other") {
       setOtherCycle(true);
+      // Циклически показываем следующие 4 опции при каждом выборе "Другое"
+      const nextOffset = (offset + 4) % questions[currentStep].options.length;
+      setOffset(nextOffset);
+      setVisibleOptions(questions[currentStep].options.slice(nextOffset, nextOffset + 4));
     } else {
       setOtherCycle(false);
       setCurrentStep((prev) => prev + 1);
+      setOffset(0);
+      setVisibleOptions(questions[currentStep + 1]?.options.slice(0, 4) || []);
     }
   };
 
-  const currentQuestion: Question | null = !otherCycle
-    ? questions[currentStep] || null
-    : {
-      question: "Выберите, что больше подходит вашему проекту:",
-      options: [
-        { title: "Вариант A", description: "Описание A", key: "a" },
-        { title: "Вариант B", description: "Описание B", key: "b" },
-      ],
-    };
+  const currentQuestion = questions[currentStep];
 
   return (
     <Container maxWidth="md">
@@ -35,16 +35,20 @@ export default function QuestionFlow() {
           <Typography variant="h4" mt={4}>
             {currentQuestion.question}
           </Typography>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {currentQuestion.options.map((option: { title: string; description: string; key: string }) => (
+          <Box display="flex" flexWrap="wrap" justifyContent="center">
+            {visibleOptions.map((option) => (
               <QuestionCard
                 key={option.key}
                 title={option.title}
                 description={option.description}
+                image={option.image}
                 onClick={() => handleOptionSelect(option.key)}
               />
             ))}
-          </div>
+          </Box>
+          <Button onClick={() => handleOptionSelect("other")} variant="outlined" style={{ marginTop: "20px" }}>
+            Показать другие варианты
+          </Button>
         </>
       ) : (
         <Typography variant="body1" mt={2}>
