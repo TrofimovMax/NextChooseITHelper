@@ -7,19 +7,15 @@ import questions, { Option } from "../questions";
 
 export default function QuestionFlow() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [otherCycle, setOtherCycle] = useState(false);
   const [visibleOptions, setVisibleOptions] = useState<Option[]>(questions[currentStep].options.slice(0, 4));
   const [offset, setOffset] = useState(0);
 
   const handleOptionSelect = (key: string) => {
     if (key === "other") {
-      setOtherCycle(true);
-      // Циклически показываем следующие 4 опции при каждом выборе "Другое"
       const nextOffset = (offset + 4) % questions[currentStep].options.length;
       setOffset(nextOffset);
       setVisibleOptions(questions[currentStep].options.slice(nextOffset, nextOffset + 4));
     } else {
-      setOtherCycle(false);
       setCurrentStep((prev) => prev + 1);
       setOffset(0);
       setVisibleOptions(questions[currentStep + 1]?.options.slice(0, 4) || []);
