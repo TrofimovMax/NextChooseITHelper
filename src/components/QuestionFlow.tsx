@@ -1,11 +1,12 @@
 // src/components/QuestionFlow.tsx
 
 import React from "react";
-import { Container, Typography, Box, IconButton, Alert } from "@mui/material";
+import { Container, Typography, IconButton, Alert } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import QuestionCard from "./QuestionCard";
 import { useQuestions } from "@/hooks/useQuestions";
+import Grid from "@mui/material/Grid2";
 
 export default function QuestionFlow() {
   const {
@@ -33,60 +34,65 @@ export default function QuestionFlow() {
 
   return (
     <Container maxWidth={false} style={{ height: "100vh", padding: "0" }}>
-      <Box sx={{ paddingBottom: "2rem" }}>
-        <Typography variant="h4" mt={4} align="center">
+      {/* Заголовок */}
+      <Grid item xs={12}>
+        <Typography variant="h4" align="center" mt={4}>
           {currentQuestion.question}
         </Typography>
-      </Box>
+      </Grid>
+
+      {/* Alert сообщение */}
       {showAlert && (
-        <Box mt={2}>
-          <Alert severity="info">Пока эта опция в разработке</Alert>
-        </Box>
+        <Grid item xs={12}>
+          <Alert severity="info" sx={{ textAlign: "center" }}>
+            Пока эта опция в разработке
+          </Alert>
+        </Grid>
       )}
-      <Box
+      {/* Основной контейнер */}
+      <Grid
+        container
+        alignItems="center"
         sx={{
-          display: "flex",
-          height: "calc(100% - 100px)",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 20px",
+          height: "90vh",
         }}
       >
-        <Box
+        {/* Стрелка "Назад" */}
+        <Grid
+          item
+          xs={1}
           sx={{
-            height: "100%",
-            maxWidth: "100px",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "transparent",
-            "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.1)" },
-            cursor: offset === 0 ? "not-allowed" : "pointer",
+            alignItems: "center",
+            paddingRight: 2,
           }}
-          onClick={handlePrevious}
         >
-          <IconButton disabled={offset === 0}>
+          <IconButton
+            onClick={handlePrevious}
+            disabled={offset === 0}
+            size="large"
+          >
             <ArrowBackIosIcon />
           </IconButton>
-        </Box>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gridTemplateRows: "repeat(2, 1fr)",
-            gap: 3,
-            width: "80vw",
-            height: "100%",
-          }}
+        </Grid>
+        {/* Карточки по центру */}
+        <Grid
+          item
+          xs={10}
+          container
+          spacing={2}
+          justifyContent="center"
+          alignItems="center"
         >
           {visibleOptions.map((option) => (
-            <Box
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
               key={option.key}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
             >
               <QuestionCard
                 title={option.title}
@@ -94,32 +100,29 @@ export default function QuestionFlow() {
                 image={option.image}
                 onClick={() => handleOptionSelect(option.key, option.title)}
               />
-            </Box>
+            </Grid>
           ))}
-        </Box>
-        <Box
+        </Grid>
+        {/* Стрелка "Вперед" */}
+        <Grid
+          item
+          xs={1}
           sx={{
-            height: "100%",
-            maxWidth: "100px",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "transparent",
-            "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.1)" },
-            cursor:
-              offset + 4 >= currentQuestion.options.length
-                ? "not-allowed"
-                : "pointer",
+            alignItems: "center",
+            paddingLeft: 2,
           }}
-          onClick={handleNext}
         >
           <IconButton
-            disabled={offset + 4 >= currentQuestion.options.length}
+            onClick={handleNext}
+            disabled={offset + visibleOptions.length >= currentQuestion.options.length}
+            size="large"
           >
             <ArrowForwardIosIcon />
           </IconButton>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

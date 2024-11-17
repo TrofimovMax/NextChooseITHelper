@@ -15,24 +15,16 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, 
     <Card
       onClick={onClick}
       sx={{
-        cursor: "pointer",
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
-        transition: "transform 0.2s",
-        "&:hover": {
-          transform: "scale(1.02)",
-        },
       }}
     >
       <CardActionArea
         sx={{
-          height: "100%",
+          flex: 1,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
         <CardMedia
@@ -40,13 +32,20 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, 
           image={image}
           alt={title}
           sx={{
-            maxWidth: "95%",
-            maxHeight: "60%",
-            objectFit: "contain",
-            margin: "10px auto",
+            width: "100%",
+            maxHeight: "150px",
+            objectFit: "cover",
           }}
         />
-        <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+        <CardContent
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
           <Typography variant="h6" component="div">
             {title}
           </Typography>
