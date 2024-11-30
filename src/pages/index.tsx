@@ -8,7 +8,7 @@ export default function Home() {
     <Container maxWidth="md">
       <Box textAlign="center" mt={8}>
         <Typography variant="h2" gutterBottom>
-          Вас приветствует ваш личный помощник выбора  IT-технологий!
+          Вас приветствует ваш личный помощник выбора IT-технологий!
         </Typography>
         <Typography variant="body1" paragraph>
           Это приложение поможет вам выбрать наиболее подходящие ИТ-технологии для ваших нужд.

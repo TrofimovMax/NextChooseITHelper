@@ -1,15 +1,18 @@
 // src/hooks/useQuestions.ts
 
 import { useState } from "react";
-import questions from "../questions";
+import { useQuery } from "@tanstack/react-query";
+import { fetchQuestionByFilters } from "@/api/fetchQuestionByFilters";
 
 export const useQuestions = () => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState<string[]>([]); // Список ключей фильтров
   const [offset, setOffset] = useState(0);
-  const [showAlert, setShowAlert] = useState(false);
-  const [answers, setAnswers] = useState<{ key: string; value: string }[]>([]);
 
-  const currentQuestion = questions[currentStep];
+  const { data: currentQuestion, isLoading, isError } = useQuery({
+    queryKey: ["question", answers],
+    queryFn: () => fetchQuestionByFilters(answers.length ? answers : ["first_question"]),
+  });
+
   const visibleOptions = currentQuestion?.options.slice(offset, offset + 4);
 
   const handleNext = () => {
@@ -26,15 +29,9 @@ export const useQuestions = () => {
     }
   };
 
-  const handleOptionSelect = (key: string, title: string) => {
-    if (key === "other") {
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 3000);
-    } else {
-      setCurrentStep((prev) => prev + 1);
-      setAnswers((prev) => [...prev, { key, value: title }]);
-      setOffset(0);
-    }
+  const handleOptionSelect = (key: string) => {
+    setAnswers((prev) => [...prev, key]);
+    setOffset(0);
   };
 
   return {
@@ -44,7 +41,7 @@ export const useQuestions = () => {
     handleNext,
     handlePrevious,
     handleOptionSelect,
-    showAlert,
-    answers,
+    isLoading,
+    isError,
   };
 };
