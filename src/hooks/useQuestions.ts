@@ -1,23 +1,54 @@
 // src/hooks/useQuestions.ts
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchQuestionByFilters } from "@/api/fetchQuestionByFilters";
 
 export const useQuestions = () => {
-  const [answers, setAnswers] = useState<string[]>([]); // Список ключей фильтров
+  const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<string[]>(["first_question"]);
+  const [answers, setAnswers] = useState<{ key: string; value: string }[]>([]);
   const [offset, setOffset] = useState(0);
 
-  const { data: currentQuestion, isLoading, isError } = useQuery({
-    queryKey: ["question", answers],
-    queryFn: () => fetchQuestionByFilters(answers.length ? answers : ["first_question"]),
+  const queryKey = ["question", ...filters.filter(Boolean)];
+
+  const {
+    data: currentQuestion,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey,
+    queryFn: () => fetchQuestionByFilters(filters.filter(Boolean)),
+    enabled: filters.length > 0,
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 
-  const visibleOptions = currentQuestion?.options.slice(offset, offset + 4);
+  const handleOptionSelect = (key: string, value: string) => {
+    if (!key || key.trim() === "") return;
+
+    let updatedFilters;
+    if (filters.length === 1 && filters[0] === "first_question") {
+      updatedFilters = [key];
+    } else {
+      updatedFilters = [...filters, key];
+    }
+
+    setFilters(updatedFilters.filter(Boolean));
+    setAnswers([...answers, { key, value }]);
+    setOffset(0);
+
+    queryClient.prefetchQuery({
+      queryKey: ["question", ...updatedFilters],
+      queryFn: () => fetchQuestionByFilters(updatedFilters),
+    });
+  };
 
   const handleNext = () => {
     const nextOffset = offset + 4;
-    if (currentQuestion && nextOffset < currentQuestion.options.length) {
+    if (currentQuestion?.options && nextOffset < currentQuestion.options.length) {
       setOffset(nextOffset);
     }
   };
@@ -29,19 +60,20 @@ export const useQuestions = () => {
     }
   };
 
-  const handleOptionSelect = (key: string) => {
-    setAnswers((prev) => [...prev, key]);
-    setOffset(0);
-  };
+  const visibleOptions = currentQuestion?.options
+    ? currentQuestion.options.slice(offset, offset + 4)
+    : [];
 
   return {
     currentQuestion,
     visibleOptions,
     offset,
+    answers,
     handleNext,
     handlePrevious,
     handleOptionSelect,
     isLoading,
     isError,
+    error,
   };
 };

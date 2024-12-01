@@ -13,11 +13,13 @@ export default function QuestionFlow() {
     currentQuestion,
     visibleOptions,
     offset,
+    answers,
     handleNext,
     handlePrevious,
     handleOptionSelect,
     isLoading,
     isError,
+    error,
   } = useQuestions();
 
   if (isLoading) {
@@ -30,7 +32,7 @@ export default function QuestionFlow() {
     );
   }
 
-  if (isError) {
+  if (isError || error) {
     return (
       <Container maxWidth="sm" style={{ textAlign: "center", marginTop: "50px" }}>
         <Typography variant="body1" mt={2} color="error">
@@ -40,11 +42,19 @@ export default function QuestionFlow() {
     );
   }
 
-  if (!currentQuestion) {
+  const questionData = Array.isArray(currentQuestion) ? currentQuestion[0] : null;
+  const statusCode = Array.isArray(currentQuestion) ? currentQuestion[1] : null;
+
+  if (
+    questionData?.message &&
+    statusCode === 404
+  ) {
     return (
       <Container maxWidth="sm" style={{ textAlign: "center", marginTop: "50px" }}>
         <Typography variant="body1" mt={2}>
-          Спасибо за ваши ответы! Мы обработаем их и предоставим рекомендации.
+          Спасибо за ваши ответы:{" "}
+          {answers.map((answer) => answer.value).join(", ")}! Мы обработаем их и
+          предоставим рекомендации.
         </Typography>
       </Container>
     );
@@ -58,7 +68,7 @@ export default function QuestionFlow() {
         </Typography>
       </Grid>
 
-      {currentQuestion.options.length === 0 && (
+      {currentQuestion?.options?.length === 0 && (
         <Grid item xs={12}>
           <Alert severity="info" sx={{ textAlign: "center" }}>
             Вопросов больше нет.
@@ -66,66 +76,70 @@ export default function QuestionFlow() {
         </Grid>
       )}
 
-      <Grid container alignItems="center" sx={{ height: "90vh" }}>
-        <Grid
-          item
-          xs={1}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingRight: 2,
-          }}
-        >
-          <IconButton
-            onClick={handlePrevious}
-            disabled={offset === 0}
-            size="large"
+      {currentQuestion?.options?.length > 0 && (
+        <Grid container alignItems="center" sx={{ height: "90vh" }}>
+          <Grid
+            item
+            xs={1}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingRight: 2,
+            }}
           >
-            <ArrowBackIosIcon />
-          </IconButton>
-        </Grid>
-        <Grid
-          item
-          xs={10}
-          container
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-        >
-          {visibleOptions.map((option: any) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={option.option_id}>
-              <QuestionCard
-                title={option.text}
-                description=""
-                image={option.image_url}
-                onClick={() => handleOptionSelect(option.key)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        <Grid
-          item
-          xs={1}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingLeft: 2,
-          }}
-        >
-          <IconButton
-            onClick={handleNext}
-            disabled={
-              currentQuestion.options &&
-              offset + 4 >= currentQuestion.options.length
-            }
-            size="large"
+            <IconButton
+              onClick={handlePrevious}
+              disabled={offset === 0}
+              size="large"
+            >
+              <ArrowBackIosIcon />
+            </IconButton>
+          </Grid>
+          <Grid
+            item
+            xs={10}
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
           >
-            <ArrowForwardIosIcon />
-          </IconButton>
+            {visibleOptions.map((option: any) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={option.option_id}>
+                <QuestionCard
+                  title={option.text}
+                  description=""
+                  image={option.image_url}
+                  onClick={() => {
+                    handleOptionSelect(option.key, option.text);
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Grid
+            item
+            xs={1}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingLeft: 2,
+            }}
+          >
+            <IconButton
+              onClick={handleNext}
+              disabled={
+                currentQuestion.options &&
+                offset + 4 >= currentQuestion.options.length
+              }
+              size="large"
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Container>
   );
 }
