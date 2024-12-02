@@ -1,6 +1,6 @@
 // src/components/QuestionCard.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardMedia, Typography, CardActionArea } from "@mui/material";
 
 interface QuestionCardProps {
@@ -11,6 +11,12 @@ interface QuestionCardProps {
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, onClick }) => {
+  const [imgSrc, setImgSrc] = useState(image || "/images/default.png");
+
+  const handleImageError = () => {
+    setImgSrc("/images/default.png");
+  };
+
   return (
     <Card
       onClick={onClick}
@@ -29,8 +35,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, 
       >
         <CardMedia
           component="img"
-          image={image}
+          image={imgSrc}
           alt={title}
+          onError={handleImageError}
           sx={{
             width: "100%",
             maxHeight: "150px",
