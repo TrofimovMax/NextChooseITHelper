@@ -6,7 +6,7 @@ import { fetchQuestionByFilters } from "@/api/fetchQuestionByFilters";
 
 export const useQuestions = () => {
   const queryClient = useQueryClient();
-  const [filters, setFilters] = useState<string[]>(["first_question"]);
+  const [filters, setFilters] = useState<string[]>(["initial_key"]);
   const [answers, setAnswers] = useState<{ key: string; value: string }[]>([]);
   const [offset, setOffset] = useState(0);
 
@@ -30,7 +30,7 @@ export const useQuestions = () => {
     if (!key || key.trim() === "") return;
 
     let updatedFilters;
-    if (filters.length === 1 && filters[0] === "first_question") {
+    if (filters.length === 1 && filters[0] === "initial_key") {
       updatedFilters = [key];
     } else {
       updatedFilters = [...filters, key];
