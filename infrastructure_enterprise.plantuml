@@ -1,0 +1,42 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam componentStyle rectangle
+
+node "IT Infrastructure" {
+    frame "Director's Office" {
+        [Director's PC] --> [Video Conferencing]
+        [Director's PC] --> [Local Network (VLAN-1)]
+    }
+
+    frame "Manager Area" {
+        [Manager's PC 1] --> [Video Conferencing]
+        [Manager's PC 1] --> [Local Network (VLAN-1)]
+        [Manager's PC 2] --> [Video Conferencing]
+        [Manager's PC 2] --> [Local Network (VLAN-1)]
+        [Manager's PC 3] --> [Video Conferencing]
+        [Manager's PC 3] --> [Local Network (VLAN-1)]
+    }
+
+    frame "Analyst Zone" {
+        [Analyst's PC 1] --> [Local Network (VLAN-1)]
+        [Analyst's PC 2] --> [Local Network (VLAN-1)]
+        [Analyst's PC 3] --> [Local Network (VLAN-1)]
+        [Analyst's PC 1] --> [Excel/Word Tools]
+        [Analyst's PC 2] --> [Excel/Word Tools]
+        [Analyst's PC 3] --> [Excel/Word Tools]
+    }
+
+    cloud "Document Cloud" {
+        [Past Orders (Word)]
+        [Technologies (Excel)]
+        [Past Orders (Word)] --> [Cloud Storage]
+        [Technologies (Excel)] --> [Cloud Storage]
+        [Cloud Storage] --> [Local Network (VLAN-1)]
+    }
+}
+
+cloud "Internet" {
+    [Client Communication] --> [Video Conferencing]
+}
+
+@enduml
