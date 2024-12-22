@@ -1,0 +1,43 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam componentStyle rectangle
+
+frame "Office Layout" {
+    rectangle "Reception" {
+        rectangle "Client Waiting Area" as WaitingArea
+        rectangle "Meeting Room" as MeetingRoom
+    }
+
+    frame "Director's Office" {
+        rectangle "Director's Desk" as DirectorsDesk
+        rectangle "Sofa Area" as SofaArea
+    }
+
+    frame "Manager's Area" {
+        rectangle "Manager 1 Desk" as Manager1
+        rectangle "Manager 2 Desk" as Manager2
+        rectangle "Manager 3 Desk" as Manager3
+    }
+
+    frame "Analyst's Area" {
+        rectangle "Analyst 1 Desk" as Analyst1
+        rectangle "Analyst 2 Desk" as Analyst2
+        rectangle "Analyst 3 Desk" as Analyst3
+    }
+
+    frame "IT Infrastructure" {
+        rectangle "NAS Server" as NASS
+        rectangle "Backup VLAN" as BackupVLAN
+        rectangle "ChooseITHelper Server" as ChooseITServer
+    }
+
+    WaitingArea --> MeetingRoom
+    DirectorsDesk --> SofaArea
+    Manager1 --> Manager2
+    Manager2 --> Manager3
+    Analyst1 --> Analyst2
+    Analyst2 --> Analyst3
+    NASS --> BackupVLAN
+    ChooseITServer --> NASS
+}
+@enduml
