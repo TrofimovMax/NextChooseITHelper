@@ -104,11 +104,11 @@ export default function QuestionFlow() {
             {visibleOptions.map((option: any) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={option.option_id}>
                 <QuestionCard
-                  title={option.text}
+                  title={option.title}
                   description=""
                   image={option.image_url}
                   onClick={() => {
-                    handleOptionSelect(option.key, option.text);
+                    handleOptionSelect(option.key, option.title, option.next_question_id || null);
                   }}
                 />
               </Grid>

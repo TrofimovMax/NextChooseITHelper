@@ -6,11 +6,13 @@ import { fetchQuestionByFilters } from "@/api/fetchQuestionByFilters";
 
 export const useQuestions = () => {
   const queryClient = useQueryClient();
-  const [filters, setFilters] = useState<string[]>(["initial_key"]);
+
+  const [filters, setFilters] = useState<string[]>([]);
   const [answers, setAnswers] = useState<{ key: string; value: string }[]>([]);
   const [offset, setOffset] = useState(0);
+  const [nextQuestionId, setNextQuestionId] = useState<number>(1);
 
-  const queryKey = ["question", ...filters.filter(Boolean)];
+  const queryKey = ["question", ...filters.filter(Boolean), nextQuestionId];
 
   const {
     data: currentQuestion,
@@ -19,30 +21,26 @@ export const useQuestions = () => {
     error,
   } = useQuery({
     queryKey,
-    queryFn: () => fetchQuestionByFilters(filters.filter(Boolean)),
-    enabled: filters.length > 0,
+    queryFn: () => fetchQuestionByFilters(filters, nextQuestionId),
+    enabled: true,
     keepPreviousData: true,
     staleTime: 1000 * 60 * 5,
     retry: false,
   });
 
-  const handleOptionSelect = (key: string, value: string) => {
+  const handleOptionSelect = (key: string, value: string, newNextQuestionId: number | null = null) => {
     if (!key || key.trim() === "") return;
 
-    let updatedFilters;
-    if (filters.length === 1 && filters[0] === "initial_key") {
-      updatedFilters = [key];
-    } else {
-      updatedFilters = [...filters, key];
-    }
-
+    const updatedFilters = [...filters, key];
     setFilters(updatedFilters.filter(Boolean));
     setAnswers([...answers, { key, value }]);
     setOffset(0);
 
+    setNextQuestionId(newNextQuestionId);
+
     queryClient.prefetchQuery({
-      queryKey: ["question", ...updatedFilters],
-      queryFn: () => fetchQuestionByFilters(updatedFilters),
+      queryKey: ["question", ...updatedFilters, newNextQuestionId ?? nextQuestionId],
+      queryFn: () => fetchQuestionByFilters(updatedFilters, newNextQuestionId ?? nextQuestionId),
     });
   };
 
