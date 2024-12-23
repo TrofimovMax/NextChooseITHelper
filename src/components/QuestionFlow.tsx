@@ -1,12 +1,13 @@
 // src/components/QuestionFlow.tsx
 
 import React from "react";
-import { Container, Typography, IconButton, Alert } from "@mui/material";
+import { Container, Typography, IconButton, Alert, Button } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import QuestionCard from "./QuestionCard";
 import Grid from "@mui/material/Grid2";
 import { useQuestions } from "@/hooks/useQuestions";
+import { fetchEvaluations } from "@/api/fetchEvaluations";
 
 export default function QuestionFlow() {
   const {
@@ -21,6 +22,17 @@ export default function QuestionFlow() {
     isError,
     error,
   } = useQuestions();
+
+  const handleGetResults = async () => {
+    try {
+      const results = await fetchEvaluations(answers.map((answer) => answer.key));
+      console.log("Results:", results);
+      // Handle successful response (e.g., display results to the user)
+    } catch (err) {
+      console.error("Error fetching results:", err);
+      // Handle error (e.g., show error message to the user)
+    }
+  };
 
   if (isLoading) {
     return (
@@ -49,10 +61,16 @@ export default function QuestionFlow() {
     return (
       <Container maxWidth="sm" style={{ textAlign: "center", marginTop: "50px" }}>
         <Typography variant="body1" mt={2}>
-          Спасибо за ваши ответы:{" "}
-          {answers.map((answer) => answer.value).join(", ")}! Мы обработаем их и
-          предоставим рекомендации.
+          Спасибо за ваши ответы: {answers.map((answer) => answer.value).join(", ")}! Мы обработаем их и предоставим рекомендации.
         </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleGetResults}
+          style={{ marginTop: "20px" }}
+        >
+          Получить результаты
+        </Button>
       </Container>
     );
   }
