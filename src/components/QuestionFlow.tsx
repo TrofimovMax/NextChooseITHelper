@@ -1,13 +1,14 @@
 // src/components/QuestionFlow.tsx
 
-import React from "react";
-import { Container, Typography, IconButton, Alert, Button } from "@mui/material";
+import React, { useState } from "react";
+import { Container, Typography, IconButton, Alert, AlertTitle, Button } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import QuestionCard from "./QuestionCard";
 import Grid from "@mui/material/Grid2";
 import { useQuestions } from "@/hooks/useQuestions";
 import { fetchEvaluations } from "@/api/fetchEvaluations";
+import { useRouter } from "next/router";
 
 export default function QuestionFlow() {
   const {
@@ -23,14 +24,20 @@ export default function QuestionFlow() {
     error,
   } = useQuestions();
 
+  const [fetchError, setFetchError] = useState<string | null>(null); // State для ошибок
+  const router = useRouter();
+
   const handleGetResults = async () => {
     try {
-      const results = await fetchEvaluations(answers.map((answer) => answer.key));
-      console.log("Results:", results);
-      // Handle successful response (e.g., display results to the user)
-    } catch (err) {
-      console.error("Error fetching results:", err);
-      // Handle error (e.g., show error message to the user)
+      setFetchError(null);
+      const response = await fetchEvaluations(answers.map((answer) => answer.key));
+      if (response.result_id) {
+        router.push(`/results/${response.result_id}`);
+      } else {
+        setFetchError("Не удалось получить результат. Попробуйте позже.");
+      }
+    } catch (err: any) {
+      setFetchError(err.message || "Ошибка при получении результатов.");
     }
   };
 
@@ -47,9 +54,10 @@ export default function QuestionFlow() {
   if (isError || error) {
     return (
       <Container maxWidth="sm" style={{ textAlign: "center", marginTop: "50px" }}>
-        <Typography variant="body1" mt={2} color="error">
+        <Alert severity="error">
+          <AlertTitle>Ошибка</AlertTitle>
           Ошибка при загрузке данных.
-        </Typography>
+        </Alert>
       </Container>
     );
   }
@@ -63,6 +71,12 @@ export default function QuestionFlow() {
         <Typography variant="body1" mt={2}>
           Спасибо за ваши ответы: {answers.map((answer) => answer.value).join(", ")}! Мы обработаем их и предоставим рекомендации.
         </Typography>
+        {fetchError && (
+          <Alert severity="error" style={{ marginTop: "20px" }}>
+            <AlertTitle>Ошибка</AlertTitle>
+            {fetchError}
+          </Alert>
+        )}
         <Button
           variant="contained"
           color="primary"
