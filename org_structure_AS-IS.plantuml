@@ -1,0 +1,18 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam componentStyle rectangle
+
+rectangle "Директор" as Director
+rectangle "Менеджеры" as ProjectManagers
+rectangle "Поддержка Cloud Storage" as DBAdmins
+rectangle "Аналитики данных" as DataAnalysts
+rectangle "Бухгалтеры" as Accountants
+rectangle "Технический персонал" as MaintenancePersonnel
+
+Director --> ProjectManagers
+Director --> DBAdmins
+Director --> DataAnalysts
+Director --> Accountants
+Director --> MaintenancePersonnel
+
+@enduml
