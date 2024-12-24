@@ -1,0 +1,108 @@
+@startuml
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+skinparam defaultFontName Arial
+
+class Developer {
+  name: varchar
+  technology_id: integer
+  framework_id: integer
+  team_id: integer
+  developer_id: integer
+
+  + использоватьFramework()
+  + работатьСТехнологией()
+}
+
+class Framework {
+  name: varchar
+  language_id: integer
+  feasibility: double precision
+  novelty: double precision
+  usefulness: double precision
+  framework_id: integer
+
+  + получитьОценки()
+  + анализироватьКлюч()
+}
+
+class Key {
+  key: varchar
+  is_criterion: boolean
+  id: integer
+
+  + определитьКритерий()
+}
+
+class Language {
+  name: varchar
+  language_id: integer
+
+  + использоватьЯзык()
+}
+
+class Option {
+  title: text
+  description: text
+  image_path: varchar
+  key: varchar
+  question_id: integer
+  next_question_id: integer
+  option_id: integer
+
+  + выбратьВопрос()
+  + перейтиНаСледующий()
+}
+
+class Question {
+  text: text
+  key_id: integer
+  question_id: integer
+
+  + задатьВопрос()
+}
+
+class Result {
+  user_id: integer
+  query_keys: jsonb
+  smart_results: jsonb
+  ahp_results: jsonb
+  adaptive_weighted_results: jsonb
+  id: integer
+
+  + сохранитьРезультат()
+}
+
+class Team {
+  team_name: varchar
+  lead_id: integer
+  team_id: integer
+
+  + добавитьЧлена()
+  + назначитьЛидера()
+}
+
+class User {
+  name: varchar
+  email: varchar
+  role: varchar
+  team_id: integer
+  user_id: integer
+
+  + войтиВКоманду()
+}
+
+Developer "1" -- "0..*" Framework : использует
+Developer "1" -- "0..*" Language : работает
+Developer "1" -- "0..*" Team : принадлежит
+Framework "1" -- "0..*" Language : определяет
+Framework "0..*" -- "1" Key : анализирует
+Option "0..*" -- "1" Question : задает
+Option "0..*" -- "1" Question : переходит
+Question "0..*" -- "1" Key : определяет
+Result "0..*" -- "1" User : связан
+Team "1" -- "0..*" User : руководит
+User "1" -- "0..*" Team : входит
+
+@enduml
