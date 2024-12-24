@@ -1,0 +1,89 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class developers {
+   name: varchar
+   technology_id: integer
+   framework_id: integer
+   team_id: integer
+   developer_id: integer
+}
+class frameworks {
+   name: varchar
+   language_id: integer
+   feasibility: double precision
+   novelty: double precision
+   usefulness: double precision
+   framework_id: integer
+}
+class frameworks_keys {
+   smart_score: double precision
+   ahp_score: double precision
+   framework_id: integer
+   key_id: integer
+}
+class keys {
+   key: varchar
+   is_criterion: boolean
+   id: integer
+}
+class languages {
+   name: varchar
+   language_id: integer
+}
+class options {
+   title: text
+   description: text
+   image_path: varchar
+   key: varchar
+   question_id: integer
+   next_question_id: integer
+   option_id: integer
+}
+class question_keys {
+   question_id: integer
+   key_id: integer
+   id: integer
+}
+class questions {
+   text: text
+   question_id: integer
+}
+class results {
+   user_id: integer
+   query_keys: jsonb
+   smart_results: jsonb
+   ahp_results: jsonb
+   adaptive_weighted_results: jsonb
+   id: integer
+}
+class teams {
+   team_name: varchar
+   lead_id: integer
+   team_id: integer
+}
+class users {
+   name: varchar
+   email: varchar
+   role: varchar
+   team_id: integer
+   user_id: integer
+}
+
+developers       -[#595959,plain]-^  frameworks      : "framework_id"
+developers       -[#595959,plain]-^  languages       : "technology_id:language_id"
+developers       -[#595959,plain]-^  teams           : "team_id"
+frameworks       -[#595959,plain]-^  languages       : "language_id"
+frameworks_keys  -[#595959,plain]-^  frameworks      : "framework_id"
+frameworks_keys  -[#595959,plain]-^  keys            : "key_id:id"
+options          -[#595959,plain]-^  questions       : "question_id"
+options          -[#595959,plain]-^  questions       : "next_question_id:question_id"
+question_keys    -[#595959,plain]-^  keys            : "key_id:id"
+question_keys    -[#595959,plain]-^  questions       : "question_id"
+results          -[#595959,plain]-^  users           : "user_id"
+teams            -[#595959,plain]-^  users           : "lead_id:user_id"
+users            -[#595959,plain]-^  teams           : "team_id"
+@enduml
