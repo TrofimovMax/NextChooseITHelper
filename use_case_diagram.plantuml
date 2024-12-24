@@ -1,0 +1,32 @@
+@startuml
+
+actor "Клиент" as Client
+actor "Менеджер" as Manager
+actor "Аналитик" as Analyst
+
+usecase "Создание запроса на выбор технологий" as UC1
+usecase "Уточнение требований" as UC2
+usecase "Анализ технологий" as UC3
+usecase "Ранжирование технологий" as UC4
+usecase "Формирование отчета" as UC5
+usecase "Обновление базы знаний" as UC6
+
+actor "ChooseITHelper" as System
+
+Client --> UC1 : "Отправляет запрос"
+Client --> UC6 : "Вносит данные"
+Manager --> UC2 : "Уточняет требования"
+Manager --> UC5 : "Подготавливает отчет"
+Analyst --> UC2 : "Получает уточненные требования"
+Analyst --> UC6 : "Вносит данные"
+System --> UC3 : "Проводит анализ"
+System --> UC4 : "Ранжирует технологии"
+System --> UC5 : "Формирует отчет"
+
+UC1 --> UC2 : "Передача данных о запросе"
+UC2 --> Analyst : "Передача уточненных требований"
+Analyst --> UC3 : "Передача данных в ChooseITHelper"
+UC3 --> UC4 : "Результаты анализа"
+UC4 --> UC5 : "Ранжированный список технологий"
+
+@enduml
