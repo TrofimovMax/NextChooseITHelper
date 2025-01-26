@@ -3,6 +3,7 @@ skinparam defaultFontName Arial
 skinparam componentStyle rectangle
 
 node "IT Infrastructure" {
+    left to right direction
     frame "Director's Office" {
         [Director's PC] --> [Video Conferencing]
         [Director's PC] --> [Local Network (VLAN-1)]
