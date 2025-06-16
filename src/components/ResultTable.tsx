@@ -1,18 +1,20 @@
 // src/components/ResultTable.tsx
 
 import React from "react";
-import { Typography } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+
+interface ResultItem {
+  name: string;
+  language_name: string;
+  smart_score?: number;
+  ahp_score?: number;
+  awm_score?: number;
+}
 
 interface ResultTableProps {
   title: string;
-  results: Array<{
-    language: string;
-    frameworks: Array<{
-      score: number;
-      title: string;
-    }>;
-  }>;
+  results: ResultItem[];
 }
 
 export default function ResultTable({ title, results }: ResultTableProps) {
@@ -23,17 +25,28 @@ export default function ResultTable({ title, results }: ResultTableProps) {
       </Typography>
       <Grid container spacing={2}>
         {results.map((item) => (
-          <Grid item xs={12} key={item.language}>
-            <Typography variant="subtitle1">{item.language}</Typography>
-            <Grid container spacing={1}>
-              {item.frameworks.map((framework) => (
-                <Grid item xs={12} key={framework.title}>
-                  <Typography variant="body2">
-                    {framework.title}: {framework.score}
-                  </Typography>
-                </Grid>
-              ))}
-            </Grid>
+          <Grid item xs={12} sm={6} md={4} key={item.name}>
+            <Paper style={{ padding: "12px" }}>
+              <Typography variant="subtitle1">{item.name}</Typography>
+              <Typography variant="body2">
+                Язык: {item.language_name}
+              </Typography>
+              {item.smart_score !== undefined && (
+                <Typography variant="body2">
+                  SMART Score: {item.smart_score.toFixed(5)}
+                </Typography>
+              )}
+              {item.ahp_score !== undefined && (
+                <Typography variant="body2">
+                  AHP Score: {item.ahp_score.toFixed(5)}
+                </Typography>
+              )}
+              {item.awm_score !== undefined && (
+                <Typography variant="body2">
+                  AWM Score: {item.awm_score.toFixed(5)}
+                </Typography>
+              )}
+            </Paper>
           </Grid>
         ))}
       </Grid>
