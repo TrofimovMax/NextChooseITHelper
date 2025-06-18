@@ -62,10 +62,7 @@ export default function QuestionFlow() {
     );
   }
 
-  const questionData = Array.isArray(currentQuestion) ? currentQuestion[0] : null;
-  const statusCode = Array.isArray(currentQuestion) ? currentQuestion[1] : null;
-
-  if (questionData?.message === "No questions found" && statusCode === 404) {
+  if (typeof currentQuestion?.message === "string" && currentQuestion.message.includes("No questions found")) {
     return (
       <Container maxWidth="sm" style={{ textAlign: "center", marginTop: "50px" }}>
         <Typography variant="body1" mt={2}>
