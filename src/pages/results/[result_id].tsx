@@ -55,12 +55,25 @@ export default function ResultPage() {
       <Typography variant="h4" align="center" gutterBottom>
         Результаты анализа
       </Typography>
-      {result?.query_keys && (
+      {result?.alternatives && (
         <>
           <Typography variant="h6" gutterBottom>
-            Использованные ключи:
+            Выбранные категории:
           </Typography>
-          <Typography variant="body1">{result.query_keys.join(", ")}</Typography>
+          <Typography variant="body1">
+            {result.alternatives.join(", ")}
+          </Typography>
+        </>
+      )}
+
+      {result?.criteria && (
+        <>
+          <Typography variant="h6" gutterBottom sx={{ marginTop: 2 }}>
+            Выбранные критерии:
+          </Typography>
+          <Typography variant="body1">
+            {result.criteria.join(", ")}
+          </Typography>
         </>
       )}
 
