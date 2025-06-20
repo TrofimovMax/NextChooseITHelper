@@ -129,9 +129,20 @@ export default function QuestionFlow() {
             spacing={2}
             justifyContent="center"
             alignItems="center"
+            sx={{ height: "100%", maxWidth: "800px", margin: "0 auto" }}
           >
-            {visibleOptions.map((option: any) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={option.option_id}>
+            {visibleOptions.slice(0, 4).map((option: any) => (
+              <Grid
+                item
+                xs={6}
+                key={option.option_id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 250,
+                }}
+              >
                 <QuestionCard
                   title={option.title}
                   description=""

@@ -21,7 +21,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, 
     <Card
       onClick={onClick}
       sx={{
-        height: "100%",
+        width: 300,
+        height: 250,
         display: "flex",
         flexDirection: "column",
       }}
@@ -40,7 +41,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, 
           onError={handleImageError}
           sx={{
             width: "100%",
-            maxHeight: "150px",
+            height: 140,
             objectFit: "cover",
           }}
         />
@@ -51,6 +52,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ title, description, image, 
             flexDirection: "column",
             justifyContent: "center",
             textAlign: "center",
+            padding: "8px",
           }}
         >
           <Typography variant="h6" component="div">
