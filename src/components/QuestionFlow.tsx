@@ -145,7 +145,7 @@ export default function QuestionFlow() {
               >
                 <QuestionCard
                   title={option.title}
-                  description=""
+                  description={option.description}
                   image={option.image_url}
                   onClick={() => {
                     handleOptionSelect(option.key, option.title, option.next_question_id || null);
